@@ -1,0 +1,98 @@
+#include <iostream>
+#include <map>
+#include <utility>
+#include <functional> // Include functional for hash function
+
+using namespace std;
+
+class Hashmap {
+private:
+    map<string, string> hashmap;
+
+public:
+    void Insert(const pair<string, string>& p) {
+        hashmap.insert(p);
+    }
+
+    void Find(const string& a) {
+        map<string, string>::iterator it = hashmap.find(a);
+        if (it != hashmap.end())
+            cout << it->first << " : " << it->second << endl;
+        else
+            cout << "Domain not found" << endl;
+    }
+
+    void Deletemap(const string& a) {
+        map<string, string>::iterator it = hashmap.find(a);
+        if (it != hashmap.end())
+            hashmap.erase(it);
+        else
+            cout << "Domain not found" << endl;
+    }
+
+void Display() {
+    // Custom hash function for strings
+    std::function<size_t(const std::string&)> customHash = [](const std::string& s) {
+        size_t hash = 0;
+        for(char c : s) {
+            hash = (hash * 31) + c; // A simple hashing algorithm
+        }
+        return hash;
+    };
+
+    for (map<string, string>::iterator it = hashmap.begin(); it != hashmap.end(); it++) {
+        cout << it->first << " : " << it->second << endl;
+        size_t hashcode = customHash(it->first);
+        cout << "Hash code: " << hashcode << endl;
+    }
+}
+
+
+};
+
+int main() {
+    string domain_name;
+    string ip_address;
+
+    Hashmap h;
+
+    cout << "Select: 1-insert, 2-find, 3-delete, 4-display, 5-exit: " << endl;
+
+    int option;
+    cin >> option;
+
+    while (option != 5) {
+        switch (option) {
+            case 1:
+                cout << "Enter domain name: " << endl;
+                cin >> domain_name;
+                cout << "Enter ip address of domain: " << endl;
+                cin >> ip_address;
+                h.Insert(make_pair(domain_name, ip_address));
+                break;
+            case 2:
+                cout << "Enter domain name to be searched: " << endl;
+                cin >> domain_name;
+                h.Find(domain_name);
+                break;
+            case 3:
+                cout << "Enter domain name to be deleted: " << endl;
+                cin >> domain_name;
+                h.Deletemap(domain_name);
+                break;
+            case 4:
+                h.Display();
+                break;
+            default:
+                cout << "Error, please type again" << endl;
+                break;
+        }
+
+        cout << "Select: 1-insert, 2-find, 3-delete, 4-display, 5-exit: " << endl;
+        cin >> option;
+    }   
+
+    cout << "Exiting..." << endl;
+    return 0;
+}
+

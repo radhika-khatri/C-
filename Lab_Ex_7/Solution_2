@@ -1,0 +1,118 @@
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+class Queue
+{
+    int *arr;
+    int capacity;
+    int front;
+    int rear;
+
+    public:  
+
+        Queue(int cap)
+        {
+            capacity = cap;
+            arr = new int[capacity];
+            front = 0;
+            rear = 0;
+        }
+
+        Queue()
+        {
+            capacity = 4;
+            arr = new int[capacity];
+            front = 0;
+            rear = 0;
+        }
+
+        void enqueue(int ele)
+        {
+            if (capacity == rear)
+            {
+                cout<<"Queue is full"<<endl;
+                return;
+            }
+            else
+            {
+                arr[rear] = ele;
+                rear++;
+            }
+            return;
+        }
+
+        void dequeue()
+        {
+            if (front == rear)
+            {
+                cout<<"Queue is empty"<<endl;
+                return;
+            }
+            else
+            {
+                for (int i=0; i<rear-1; i++)
+                {
+                    arr[i] = arr[i+1];
+                }
+                rear--;
+            }
+            return;
+        }
+       
+        bool isempty()
+        {
+            if (front == rear)
+            {
+                return true;
+            }
+            else
+            {
+                return false; 
+            }
+        }
+        void queuedisplay()
+        {
+            if (front == rear)
+            {
+                cout<<"queue is empty"<<endl;
+                return;
+            }
+            else
+            {
+                for (int i=front; i<rear; i++)
+                {
+                    cout<<arr[i]<<endl;
+                }
+                return;
+            }
+        }
+};
+
+int main()
+{
+    Queue q(5);
+
+    q.enqueue(20);
+    q.enqueue(30);
+    q.enqueue(40);
+    q.enqueue(50);
+    q.enqueue(60);
+
+    q.queuedisplay();
+    q.enqueue(70);
+
+    q.dequeue();
+
+    if(q.isempty()==0)
+    {
+        cout<<"False"<<endl;
+    }
+    else
+    {
+        cout<<"True"<<endl;
+    }
+
+    q.queuedisplay();
+}

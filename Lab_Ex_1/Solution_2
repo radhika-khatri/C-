@@ -1,0 +1,109 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
+using namespace std;
+
+class StudentRecord {
+private:
+    string IDNO;
+    string NAME;
+    string DOB;
+    float CGPA;
+
+public:
+    // Constructor
+    StudentRecord(const string& id, const string& name, const string& dob, float cgpa)
+        : IDNO(id), NAME(name), DOB(dob), CGPA(cgpa) {}
+
+    // Accessors
+    string getIDNO() const { return IDNO; }
+    string getNAME() const { return NAME; }
+    string getDOB() const { return DOB; }
+    float getCGPA() const { return CGPA; }
+};
+
+class Stack {
+private:
+    vector<StudentRecord> stackVector;
+    const size_t MAX_SIZE;
+
+public:
+    // Constructor
+    Stack(size_t maxSize) : MAX_SIZE(maxSize) {}
+
+    bool isEmpty() const {
+        return stackVector.empty();
+    }
+
+    bool isFull() const {
+        return stackVector.size() >= MAX_SIZE;
+    }
+
+    void push(const StudentRecord& record) {
+        if (!isFull()) {
+            stackVector.push_back(record);
+        } else {
+            cout << "Stack overflow. Cannot push more records." << endl;
+        }
+    }
+
+    StudentRecord pop() {
+        if (!isEmpty()) {
+            StudentRecord poppedRecord = stackVector.back();
+            stackVector.pop_back();
+            return poppedRecord;
+        } else {
+            cout << "Stack underflow. Cannot pop from an empty stack." << endl;
+            return StudentRecord("", "", "", 0.0); // Return an empty record
+        }
+    }
+
+    void display() const {
+        if (!isEmpty()) {
+            cout << "Student Records in the Stack:" << endl;
+            for (int i = stackVector.size() - 1; i >= 0; i--) {
+                cout << stackVector[i].getIDNO() << " " << stackVector[i].getNAME() << " " << stackVector[i].getDOB() << " " << stackVector[i].getCGPA() << endl;
+            }
+        } else {
+            cout << "Stack is empty." << endl;
+        }
+    }
+};
+
+int main() {
+    ifstream inputFile("studentin.dat");
+    if (!inputFile.is_open()) {
+        cout << "Error opening input file." << endl;
+        return 1;
+    }
+
+    Stack studentStack(100); // Setting maximum capacity to 100
+
+    string id, name, dob;
+    float cgpa;
+    while (inputFile >> id >> name >> dob >> cgpa) {
+        StudentRecord tempRecord(id, name, dob, cgpa);
+        studentStack.push(tempRecord);
+    }
+
+    inputFile.close();
+
+    ofstream outputFile("studentout.dat");
+    if (!outputFile.is_open()) {
+        cout << "Error opening output file." << endl;
+        return 1;
+    }
+
+    cout << "\nRecords popped from the Stack:" << endl;
+    while (!studentStack.isEmpty()) {
+        StudentRecord poppedRecord = studentStack.pop();
+        cout << poppedRecord.getIDNO() << " " << poppedRecord.getNAME() << " " << poppedRecord.getDOB() << " " << poppedRecord.getCGPA() << endl;
+
+        outputFile << poppedRecord.getIDNO() << " " << poppedRecord.getNAME() << " " << poppedRecord.getDOB() << " " << poppedRecord.getCGPA() << endl;
+    }
+
+    outputFile.close();
+    return 0;
+}
+

@@ -1,0 +1,108 @@
+#include <iostream>
+#include <string>
+#include <vector>
+
+using namespace std;
+
+class StudentRecord {
+public:
+    string name;
+    int ID;
+    float CGPA;
+
+    // Constructor
+    StudentRecord(string n, int i, float c): name(n), ID(i), CGPA(c) {}
+};
+
+class StudentList {
+private:
+    vector<StudentRecord> students;
+
+public:
+    // Function to insert a student record at a specified position
+    void insert(int position, string name, int ID, float CGPA) {
+        if (position < 0 || position > students.size()) {
+            cout << "Invalid position!" << endl;
+            return;
+        }
+        students.insert(students.begin() + position, StudentRecord(name, ID, CGPA));
+    }
+
+    // Function to search for a student by name and return its position
+    int find(string name) {
+        for (size_t i = 0; i < students.size(); ++i) {
+            if (students[i].name == name) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    // Function to remove a student record by name
+    void remove(string name) {
+        int position = find(name);
+        if (position != -1) {
+            students.erase(students.begin() + position);
+        } else {
+            cout << "Student record with name " << name << " not found!" << endl;
+        }
+    }
+
+    // Function to return student record at a specified position
+    StudentRecord* get(int position) {
+        if (position < 0 || position >= students.size()) {
+            cout << "Invalid position!" << endl;
+            return NULL;
+        }
+        return &students[position];
+    }
+
+    // Function to display all student records
+    void display() {
+        if (students.empty()) {
+            cout << "List is empty." << endl;
+            return;
+        }
+        cout << "Student records:" << endl;
+        for (size_t i = 0; i < students.size(); ++i) {
+            cout << "Name: " << students[i].name << ", ID: " << students[i].ID << ", CGPA: " << students[i].CGPA << endl;
+        }
+    }
+
+    // Function to return total number of students in the list
+    int size() {
+        return students.size();
+    }
+
+    // Function to check if the list is empty
+    bool isEmpty() {
+        return students.empty();
+    }
+};
+
+int main() {
+    StudentList students;
+
+    students.insert(0, "John", 101, 3.8);
+    students.insert(1, "Alice", 102, 3.9);
+    students.insert(2, "Bob", 103, 3.5);
+
+    students.display();
+
+    int positionOfAlice = students.find("Alice");
+    if (positionOfAlice != -1) {
+        cout << "Position of Alice is: " << positionOfAlice << endl;
+    } else {
+        cout << "Alice not found!" << endl;
+    }
+
+    students.remove("Alice");
+
+    students.display();
+
+    cout << "Size of list: " << students.size() << endl;
+    cout << "Is list empty? " << (students.isEmpty() ? "Yes" : "No") << endl;
+
+    return 0;
+}
+ 

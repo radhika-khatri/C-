@@ -1,0 +1,149 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
+using namespace std;
+
+class StudentRecord {
+public:
+    string idno;
+    string name;
+    string dob;
+    float cgpa;
+
+    // Default constructor
+    StudentRecord() : idno(""), name(""), dob(""), cgpa(0.0) {}
+
+    // Parameterized constructor
+    StudentRecord(const string& id, const string& n, const string& d, float c) 
+        : idno(id), name(n), dob(d), cgpa(c) {}
+};
+
+class Queue {
+private:
+    vector<StudentRecord> queueVector;
+    size_t capacity;
+    size_t front;
+    size_t rear;
+
+public:
+    // Constructor
+    Queue(size_t cap) : capacity(cap), front(-1), rear(-1) {}
+
+    // Method to check if the queue is empty
+    bool isEmpty() const {
+        return front == -1;
+    }
+
+    // Method to check if the queue is full
+    bool isFull() const {
+        return (rear + 1) % capacity == front;
+    }
+
+    // Method to enqueue a student record
+    void enqueue(const StudentRecord& record) {
+        if (isFull()) {
+            cout << "Queue overflow." << endl;
+            return;
+        }
+
+        if (isEmpty()) {
+            front = rear = 0;
+        } else {
+            rear = (rear + 1) % capacity;
+        }
+
+        queueVector.push_back(record);
+    }
+
+    // Method to dequeue a student record
+    StudentRecord dequeue() {
+        if (isEmpty()) {
+            cout << "Queue underflow." << endl;
+            return StudentRecord(); // Return a default initialized student record
+        }
+
+        StudentRecord dequeuedRecord = queueVector[front];
+
+        if (front == rear) {
+            front = rear = -1;
+        } else {
+            front = (front + 1) % capacity;
+        }
+
+        return dequeuedRecord;
+    }
+
+    // Method to display all student records in the queue
+    void display() const {
+        if (isEmpty()) {
+            cout << "Queue is empty." << endl;
+            return;
+        }
+
+        cout << "Student records in the queue:" << endl;
+        size_t i = front;
+        do {
+            cout << queueVector[i].idno << " " << queueVector[i].name << " " << queueVector[i].dob << " " << queueVector[i].cgpa << endl;
+            i = (i + 1) % capacity;
+        } while (i != (rear + 1) % capacity);
+    }
+
+    // Method to display student records with CGPA less than 9
+    void displayLessThan9CGPA() const {
+        if (isEmpty()) {
+            cout << "Queue is empty." << endl;
+            return;
+        }
+
+        cout << "Student records with CGPA less than 9:" << endl;
+        size_t i = front;
+        do {
+            if (queueVector[i].cgpa < 9) {
+                cout << queueVector[i].name << endl;
+            }
+            i = (i + 1) % capacity;
+        } while (i != (rear + 1) % capacity);
+    }
+};
+
+int main() {
+    ifstream inputFile("studentin.dat");
+    if (!inputFile.is_open()) {
+        cout << "Error opening input file." << endl;
+        return 1;
+    }
+
+    Queue studentQueue(5);
+    StudentRecord tempRecord;
+
+    while (inputFile >> tempRecord.idno >> tempRecord.name >> tempRecord.dob >> tempRecord.cgpa) {
+        studentQueue.enqueue(tempRecord);
+    }
+
+    inputFile.close();
+
+    studentQueue.display();
+    cout << endl;
+    studentQueue.displayLessThan9CGPA();
+    cout << endl;
+
+    ofstream outputFile("studentout.dat");
+    if (!outputFile.is_open()) {
+        cout << "Error opening output file." << endl;
+        return 1;
+    }
+
+    outputFile << "Student records dequeued:" << endl;
+    while (!studentQueue.isEmpty()) {
+        StudentRecord dequeuedRecord = studentQueue.dequeue();
+        cout << dequeuedRecord.idno << " " << dequeuedRecord.name << " " << dequeuedRecord.dob << " " << dequeuedRecord.cgpa << endl;
+        outputFile << dequeuedRecord.idno << " " << dequeuedRecord.name << " " << dequeuedRecord.dob << " " << dequeuedRecord.cgpa << endl;
+    }
+
+    studentQueue.display();
+    outputFile.close();
+
+    return 0;
+}
+

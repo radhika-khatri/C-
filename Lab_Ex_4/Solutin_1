@@ -1,0 +1,75 @@
+#include <iostream>
+#include <vector>
+#include <cstdlib> 
+#include <ctime>   
+#include <algorithm> 
+
+using namespace std;
+
+int linearSearch(const vector<int>& arr, int x) {
+	for (int i = 0; i < arr.size(); ++i) {
+		if (arr[i] == x)
+			return i; 
+	}
+	return -1; 
+}
+
+int binarySearch(const vector<int>& arr, int x) {
+	int low = 0;
+	int high = arr.size() - 1;
+	while (low <= high) {
+		int mid = low + (high - low) / 2;
+		if (arr[mid] == x)
+			return mid; 
+		else if (arr[mid] < x)
+			low = mid + 1;
+		else
+			high = mid - 1;
+	}
+	return -1; 
+}
+
+int main() {
+	srand(time(0)); 
+
+	int size;
+	cout << "Enter the size of the array: ";
+	cin >> size;
+
+
+	vector<int> elements(size);
+	for (int i = 0; i < size; ++i) {
+		elements[i] = rand() % 1000; 
+	}
+
+
+	sort(elements.begin(), elements.end());
+
+
+	cout << "Generated array: ";
+	for (int i = 0; i < size; ++i) {
+		cout << elements[i] << " ";
+	}
+	cout << endl;
+
+	int searchElement;
+	cout << "Enter the search element: ";
+	cin >> searchElement;
+
+	int linearResult = linearSearch(elements, searchElement);
+	if (linearResult != -1) {
+		cout << "Linear Search: Element found at index " << linearResult << endl;
+	} else {
+		cout << "Linear Search: Element not found" << endl;
+	}
+
+	int binaryResult = binarySearch(elements, searchElement);
+	if (binaryResult != -1) {
+		cout << "Binary Search: Element found at index " << binaryResult << endl;
+	} else {
+		cout << "Binary Search: Element not found" << endl;
+	}
+
+	return 0;
+}
+

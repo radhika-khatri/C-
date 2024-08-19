@@ -1,0 +1,104 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <ctime>
+#include <cstdlib>
+using namespace std;
+class studentrecord
+{
+public:
+	string name;
+	int id;
+	int enrollmentYear;
+	float cgpa;
+};
+void merge(vector<studentrecord> &arr, int left, int mid, int right)
+{
+	int n1 = mid - left + 1;
+	int n2 = right - mid;
+	vector<studentrecord> L(n1), R(n2);
+	for (int i = 0; i < n1; i++)
+	{
+		L[i] = arr[left + i];
+	}
+	for (int j = 0; j < n2; j++)
+	{
+		R[j] = arr[mid + 1 + j];
+	}
+	int i = 0, j = 0, k = left;
+	while (i < n1 && j < n2)
+	{
+		if (L[i].name <= R[j].name)
+		{
+			arr[k] = L[i];
+			i++;
+		}
+		else
+		{
+			arr[k] = R[j];
+			j++;
+		}
+		k++;
+	}
+	while (i < n1)
+	{
+		arr[k] = L[i];
+		i++;
+		k++;
+	}
+	while (j < n2)
+	{
+		arr[k] = R[j];
+		j++;
+		k++;
+	}
+}
+void mergesort(vector<studentrecord> &arr, int left, int right)
+{
+	if (left < right)
+	{
+		int mid = left + (right - left) / 2;
+		mergesort(arr, left, mid);
+		mergesort(arr, mid + 1, right);
+		merge(arr, left, mid, right);
+	}
+}
+vector<studentrecord> generateRandomRecords(int numrecords)
+{
+	vector<studentrecord> records;
+	string names[] = {"Alice", "Bob", "Charlie", "David", "Emma", "Frank", "zrace", "aenry", "Ivy", "Jack"};
+
+	for (int i = 0; i < numrecords; i++)
+	{
+		studentrecord record;
+		record.name = names[rand() % 10];
+		record.id = 1000 + rand() % 9000;
+		record.enrollmentYear = 2010 + rand() % 10;
+		record.cgpa = (float)(rand() % 400) / 100.0f + 1.0f;
+		records.push_back(record);
+	}
+	return records;
+}
+int main()
+{
+	srand(time(0));
+	int numrecords = 10;
+	vector<studentrecord> studentrecords = generateRandomRecords(numrecords);
+	cout << "Unsorted Records" << endl;
+	for (int i = 0; i < studentrecords.size(); ++i)
+	{
+		cout << "Name: " << studentrecords[i].name << ",ID: " << studentrecords[i].id << ",enrollmentYear: " << studentrecords[i].enrollmentYear << ",cgpa: " << studentrecords[i].cgpa << endl;
+	}
+	clock_t start = clock();
+	mergesort(studentrecords, 0, numrecords - 1) ;
+	cout << "\n sorted records: " << endl;
+	for (int i = 0; i < studentrecords.size(); ++i)
+	{
+		cout << "Name: " << studentrecords[i].name << ",id: " << studentrecords[i].id << ",enrollmentYear: " << studentrecords[i].enrollmentYear << ",cgpa: " << studentrecords[i].cgpa << endl;
+	}
+	clock_t end = clock();
+	double timetaken = double(end - start) / CLOCKS_PER_SEC;
+	cout << "\n Time taken for sorting: " << timetaken << "seconds" << endl;
+	return 0;
+}
+

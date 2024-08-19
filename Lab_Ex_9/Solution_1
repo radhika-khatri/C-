@@ -1,0 +1,79 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+class Heap {
+private:
+    vector<string> vec;
+
+public:
+    Heap() {}
+
+    void heapify(int n, int i) {
+        int smallest = i;
+        int l = 2 * i + 1;
+        int r = 2 * i + 2;
+
+        if (l < n && vec[l] < vec[smallest]) {
+            smallest = l;
+        }
+        if (r < n && vec[r] < vec[smallest]) {
+            smallest = r;
+        }
+        if (smallest != i) {
+            swap(vec[i], vec[smallest]);
+            heapify(n, smallest);
+        }
+    }
+
+    void heapsort() {
+        int n = vec.size();
+
+        for (int i = n / 2 - 1; i >= 0; i--) {
+            heapify(n, i);
+        }
+
+        cout << "Contents of Array A after each step:" << endl;
+        for (int i = n - 1; i >= 0; i--) {
+            swap(vec[0], vec[i]);
+            printarray();
+            heapify(i, 0);
+        }
+    }
+
+    void printarray() {
+        for (int i = 0; i < vec.size(); i++) {
+            cout << vec[i] << " ";
+        }
+        cout << endl;
+    }
+
+    void add_string(const string& temp) {
+        vec.push_back(temp);
+    }
+};
+
+int main() {
+    Heap h;
+    string input;
+
+    cout << "Enter strings (enter 'done' to finish):" << endl;
+    while (true) {
+        cin >> input;
+        if (input == "done") {
+            break;
+        }
+        h.add_string(input);
+    }
+
+    cout << "Before heapifying: " << endl;
+    h.printarray();
+
+    h.heapsort();
+
+    cout << "Final Output: " << endl;
+    h.printarray();
+
+    return 0;
+}

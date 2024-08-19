@@ -1,0 +1,81 @@
+#include <iostream>
+#include <fstream>
+using namespace std;
+
+class StudentRecord {
+public:
+    char IDNO[15];
+    char NAME[50];
+    char DOB[15];
+    float CGPA;
+
+    // Constructor
+    StudentRecord(const char* id, const char* name, const char* dob, float cgpa) {
+        strcpy(IDNO, id);
+        strcpy(NAME, name);
+        strcpy(DOB, dob);
+        CGPA = cgpa;
+    }
+};
+
+#define MAX_SIZE 100
+
+class Stack {
+private:
+    StudentRecord stackArray[MAX_SIZE];
+    int top;
+
+public:
+    // Constructor
+    Stack() {
+        top = -1;
+    }
+
+    bool isFull() {
+        return top == MAX_SIZE - 1;
+    }
+
+    void push(StudentRecord record) {
+        if (!isFull()) {
+            top++;
+            stackArray[top] = record;
+            cout << "Record pushed onto the stack successfully." << endl;
+        } else {
+            cout << "Stack overflow. Cannot push more records." << endl;
+        }
+    }
+
+    void display() {
+        if (top >= 0) {
+            cout << "Student Records in the Stack:" << endl;
+            for (int i = top; i >= 0; i--) {
+                cout << stackArray[i].IDNO << " " << stackArray[i].NAME << " " << stackArray[i].DOB << " " << stackArray[i].CGPA << endl;
+            }
+        } else {
+            cout << "Stack is empty." << endl;
+        }
+    }
+};
+
+int main() {
+    ifstream inputFile("studentin.dat");
+    if (!inputFile.is_open()) {
+        cout << "Error opening input file." << endl;
+        return 1;
+    }
+
+    Stack studentStack;
+
+    char id[15], name[50], dob[15];
+    float cgpa;
+    while (inputFile >> id >> name >> dob >> cgpa) {
+        StudentRecord tempRecord(id, name, dob, cgpa);
+        studentStack.push(tempRecord);
+    }
+
+    studentStack.display();
+
+    inputFile.close();
+    return 0;
+}
+

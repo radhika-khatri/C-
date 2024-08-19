@@ -1,0 +1,107 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <ctime>
+#include <cstdlib>
+
+using namespace std;
+
+class studentrecord
+{
+    public:
+    string name;
+    int id;
+    int enrollmentyear;
+    float cgpa;
+};
+
+void swap(int *a, int *b)
+{
+    int t = *a;
+    *a = *b;
+    *b = t;
+}
+
+int partition(vector<studentrecord> &arr, int low, int high)
+{
+    int pivot = high;
+    int point = low-1;
+    for (int j=low; j<high; j++)
+    {
+        if (arr[j].name >= arr[pivot].name)
+        {   
+            point++ ;
+            swap(arr[point],arr[j]); 
+            
+        }
+    }
+    swap(arr[point+1], arr[high]);
+    return (point+1);
+}
+
+void quicksort(vector<studentrecord> &arr, int low, int high)
+{
+    if (low>high) return;
+    
+        int pi = partition(arr, low, high);
+
+        quicksort(arr, low,pi-1);
+
+        quicksort(arr, pi+1,high);
+    
+}
+
+vector<studentrecord> generateRandomRecords(int numrecords)
+{
+    vector<studentrecord> records;
+    string names[] = {"alice", "bob", "dharlie", "eavid", "femma", "hrank", "grace", "henry", "ivy", "jack"};
+    for (int i=0; i<numrecords; i++)
+    {
+        studentrecord record;
+        record.name = names[rand()%10];
+        record.id = 1000 + rand()%9000;
+        record.enrollmentyear = 2010 + rand()%10;
+        record.cgpa = (float)(rand()%400)/ 100.0f+1.0f;
+        records.push_back(record);
+    }
+    return records;
+}
+
+int main()
+{
+	srand(time(0));
+	int numrecords = 10;
+	vector<studentrecord> studentrecords = generateRandomRecords(numrecords);
+	cout << "Unsorted Records" << endl;
+	for (int i = 0; i < studentrecords.size(); ++i)
+	{
+		cout << "Name: " << studentrecords[i].name << ",ID: " << studentrecords[i].id << ",enrollmentYear: " << studentrecords[i].enrollmentyear << ",cgpa: " << studentrecords[i].cgpa << endl;
+	}
+	clock_t start = clock();
+	quicksort(studentrecords, 0, numrecords - 1) ;
+	cout << "\n sorted records: " << endl;
+	for (int i = 0; i < studentrecords.size(); ++i)
+	{
+		cout << "Name: " << studentrecords[i].name << ",id: " << studentrecords[i].id << ",enrollmentYear: " << studentrecords[i].enrollmentyear << ",cgpa: " << studentrecords[i].cgpa << endl;
+	}
+	clock_t end = clock();
+	double timetaken = double(end - start) / CLOCKS_PER_SEC;
+	cout << "\n Time taken for sorting: " << timetaken << "seconds" << endl;
+	return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
